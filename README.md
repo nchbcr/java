@@ -1,2 +1,2 @@
 # java
-see branches for java projects
+see code for generating bio biotabs
