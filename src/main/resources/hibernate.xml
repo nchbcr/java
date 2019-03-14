@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- hibernate.xml -->
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="dialect">org.hibernate.dialect.SQLServerDialect</property>
+		<!--  <property name="hibernate.hbm2ddl.auto">update</property> -->
+		
+		<!--
+			When using hibernate3 use org.hibernate.hql.classic.ClassicQueryTranslatorFactory for the 'hibernate.query.factory_class' property. 
+			When using hibernate4 use org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory for the 'hibernate.query.factory_class' property. 
+		-->
+		<property name="hibernate.query.factory_class">org.hibernate.hql.classic.ClassicQueryTranslatorFactory</property>
+		<property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+		<property name="hibernate.jdbc.batch_size">20</property>
+		<property name="hibernate.cache.use_second_level_cache">false</property>
+		<property name="show_sql">false</property>
+		<!-- <property name="default_schema">Schema Name</property> -->
+
+	</session-factory>
+</hibernate-configuration>
+

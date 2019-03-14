@@ -1,0 +1,20 @@
+
+configuration.path = C:\\TDE\\Eclipse_Workspace\\XML_Utilities\\tcga-bcr-biotab-clinical\\trunk\\config\\resbcr03\\HTMCP
+
+#Where XML comes from
+#Source XML
+clinical.xml.input.path=C:/TDE/data/XML/clinical/HTMCP/Obfuscated/NCH/
+
+clinical.biotab.output.folder=C:/TDE/data/Biotab-Bundling/newTos/HTMCP/NCH/
+
+clinical.biotab.write.empty.file = false
+
+clinical.biotab.include.empty.columns = true
+
+clinical.biotab.sort.by.display.order = true
+clinical.biotab.set.procurment.status.as.cell.value = true
+
+clinical.biotab.barcode.always.first.column = true
+clinical.biotab.append.display.order.to.header = true
+
+disease.code=cesc:dlbc:luad:lusc:lung

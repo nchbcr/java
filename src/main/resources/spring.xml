@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+		
+	<context:annotation-config/> 
+	
+	 <!-- Scans the classpath of this application for @Components to deploy as beans -->
+	<context:property-placeholder location="classpath:app.${bcr.mode}.properties"/>
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"/> 
+	
+	<context:component-scan base-package="org.nch.bcr.biotab" />
+	
+	<!--
+	<bean class="org.springframework.beans.factory.annotation.RequiredAnnotationBeanPostProcessor" />
+	-->
+	
+	<bean id="applicationContextProvider" lazy-init="false" class="org.nch.bcr.biotab.app.ApplicationContextProvider"></bean> 
+		
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="datamartDataSource" />
+    </bean>
+    
+    <!-- dataSource Settings -->
+    <bean id="datamartDataSource"  class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${org.nch.bcr.data.db.driverClassName}" />
+		<property name="url" value="${org.nch.bcr.data.db.url}" />
+		<property name="username" value="${org.nch.bcr.data.db.username}" />
+		<property name="password" value="${org.nch.bcr.data.db.password}" />
+		<property name="initialSize" value="${org.nch.bcr.data.db.initialSize}"/>
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="maxTotal" value="10" />
+        <property name="maxIdle" value="5" />
+        <property name="maxWaitMillis" value="10000" />
+	</bean>
+	
+	<bean id="bcrSqlMapClient" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="configLocation" value="classpath:ibatis-datawhse-sqlmap-config.xml" />
+		<property name="dataSource" ref="datamartDataSource" />
+	</bean>
+
+	<bean id="bcrIbatisDAO" class="org.nch.bcr.biotab.dao.BcrIbatisDAO" scope="singleton">
+		<property name="sqlSessionFactory" ref="bcrSqlMapClient" />
+	</bean>
+		
+    
+</beans>

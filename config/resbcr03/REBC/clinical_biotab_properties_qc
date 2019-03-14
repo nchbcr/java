@@ -1,0 +1,22 @@
+
+configuration.path = C:\\Bin\\properties\\biotabs\\REBC
+
+#Where XML comes from
+#Source XML
+clinical.xml.input.path=E:/data/XML/clinical/REBC/Obfuscated
+
+clinical.biotab.output.folder=E:/data/Biotab-Bundling/newTos/REBC/NCH/
+
+clinical.biotab.write.empty.file = false
+
+clinical.biotab.include.empty.columns = true
+
+clinical.biotab.sort.by.display.order = true
+clinical.biotab.set.procurment.status.as.cell.value = true
+
+clinical.biotab.barcode.always.first.column = true
+clinical.biotab.append.display.order.to.header = true
+
+
+#disease.code=kich:lgg:prad:skcm:stad:hnsc:luad:ucec:ucs:gbm
+disease.code=acc:blca:brca:cesc:chol:coad:dlbc:esca:gbm:hnsc:kich:kirc:kirp:lgg:lihc:luad:lusc:meso:ov:paad:pcpg:prad:read:sarc:skcm:stad:thca:thym:tgct:ucec:ucs

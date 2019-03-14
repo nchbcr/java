@@ -1,0 +1,20 @@
+
+configuration.path = C:\\Bin\\properties\\biotabs\\TCGA
+
+#Where XML comes from
+#Bundled XML
+clinical.xml.input.path=E:/Data/XML-Bundling/batchesxml/TCGA/Obfuscated/WashU
+
+clinical.biotab.output.folder=E:/data/Biotab-Bundling/newTos/TCGA/WashU/
+
+clinical.biotab.write.empty.file = false
+
+clinical.biotab.include.empty.columns = true
+
+clinical.biotab.sort.by.display.order = true
+clinical.biotab.set.procurment.status.as.cell.value = true
+
+clinical.biotab.barcode.always.first.column = true
+clinical.biotab.append.display.order.to.header = false
+
+disease.code=luad:laml

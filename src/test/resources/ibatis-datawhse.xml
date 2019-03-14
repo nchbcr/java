@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="nci.tcga.bcr.etl.clinical.dsl.generator.dao">
+
+<!-- 
+
+	Author: 
+-->
+
+	<select id="getDisplayMetadataItems" resultClass="org.nch.bcr.biotab.domain.cache.DisplayMetadataItem">
+		
+		select 
+			'BRCA' as diseaseCode, 
+			'Enrollment' as formType, 
+			'preferredFieldName' as preferredName, 
+			1 as displayOrder, 
+			'12345' as cde
+		
+	</select>
+
+</sqlMap>

@@ -1,0 +1,453 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.nch.bcr</groupId>
+	<artifactId>bio-tab-clinical</artifactId>
+	<version>2.7.14</version>
+	<packaging>jar</packaging>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.test.failure.ignore>true</maven.test.failure.ignore>
+		<org.springframework.version>4.2.1.RELEASE</org.springframework.version>
+		
+		<xsd.xmlbeans.clinical.version>2.7.14</xsd.xmlbeans.clinical.version>
+
+	</properties>
+	
+	<!--
+			
+			Run Integration Tests: 'mvn -Dbcr.mode=qc_dev integration-test' 
+			Run	Unit Tests: 'mvn -Dbcr.mode=qc_dev test' 
+			Build/Install: 'mvn -Dbcr.mode=qc_dev test'
+			Build/Install but skip unit tests: 'mvn -Dmaven.test.skip=true install'
+			
+			**** Package: 'mvn package' (neither unit tests nor integration tests are run in this phase)
+			
+			NOTE: Do not forget to SET MAVEN_OPTS=-Xms512m -Xmx1024m -XX:MaxPermSize=512m
+			
+		    To run the unit tests from within Eclipse, the testng plugin for Eclipse will need to be manually 
+			installed. See http://testng.org/doc/download.html for more information. 
+			
+			
+			Here is the list of phases within the Maven lifecycle:
+			
+			validate .......................  validate the project is correct and all necessary information is available.
+			initialize ...................... initialize build state, e.g. set properties or create directories.
+			generate-sources ................ generate any source code for inclusion in compilation.
+			process-sources ................. process the source code, for example to filter any values.
+			generate-resources ....,......... generate resources for inclusion in the package.
+			process-resources ............... copy and process the resources into the destination directory, ready for packaging.
+			compile ......................... compile the source code of the project.
+			process-classes ................. post-process the generated files from compilation, for example to do bytecode enhancement on Java classes.
+			generate-test-sources ........... generate any test source code for inclusion in compilation.
+			process-test-sources ............ process the test source code, for example to filter any values.
+			generate-test-resources ......... create resources for testing.
+			process-test-resources .......... copy and process the resources into the test destination directory.
+			test-compile .................... compile the test source code into the test destination directory
+			process-test-classes ............ post-process the generated files from test compilation, for example to do bytecode enhancement on Java classes. For Maven 2.0.5 and above.
+			test ............................ run tests using a suitable unit testing framework. These tests should not require the code be packaged or deployed
+			prepare-package ................. perform any operations necessary to prepare a package before the actual packaging. This often results in an unpacked, processed version of the package. (Maven 2.1 and above)
+			package ......................... take the compiled code and package it in its distributable format, such as a JAR.
+			pre-integration-test ............ perform actions required before integration tests are executed. This may involve things such as setting up the required environment
+			integration-test ................ process and deploy the package if necessary into an environment where integration tests can be run.
+			post-integration-test ........... perform actions required after integration tests have been executed. This may including cleaning up the environment.
+			verify .......................... run any checks to verify the package is valid and meets quality criteria.
+			install ......................... install the package into the local repository, for use as a dependency in other projects locally.
+			deploy .......................... done in an integration or release environment, copies the final package to the remote repository for sharing with other developers and projects.
+	-->
+	
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+				 <configuration>
+                    <source>1.8</source>
+					<target>1.8</target>
+                </configuration>
+            </plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/bio-tab-clinical-1.0-lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>bio-tab-clinical-1.0-lib/</classpathPrefix>
+							<mainClass>production org.nch.bcr.biotab.clinical.app.ClinicalBiotaberApp</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.14</version>
+				<configuration>
+				 
+				  <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=256m -Dbcr.mode=${bcr.mode}</argLine>
+				  <systemPropertyVariables>
+						<bcr.mode>${bcr.mode}</bcr.mode>
+				  </systemPropertyVariables>
+				  
+				  <includes>
+					  <include>**/*ITCase.java</include>
+				  </includes>
+				  
+				  <!--
+				  <excludes>
+					  <exclude>**/*ITCase.java</exclude>
+				  </excludes>
+				  -->
+				  <!-- 
+					A value of 'never' is an option also. 
+						forkMode=never: run TestNG in the same process as Maven, 
+						in an isolated classloader 
+					A value of 'once' is an option also. 
+						forkMode=once: The default mode, spawns a separate 
+						TestNG process (like the TestNG Ant task) 
+				  -->
+				  <forkMode>once</forkMode> 
+				  
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+
+	<dependencies>		
+	
+		<dependency>
+			  <groupId>org.nch.tcga.bcr</groupId>
+			  <artifactId>xsd-xmlbeans-clinical</artifactId>
+			  <version>${xsd.xmlbeans.clinical.version}</version>
+		</dependency>
+		
+		<!-- xmlbeans 2.6.0 -->
+		<dependency>
+			  <groupId>xmlbeans</groupId>
+			  <artifactId>jsr173_1.0_api</artifactId>
+			  <version>2.6.0</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/jsr173_1.0_api.jar</systemPath>
+		</dependency>
+		<dependency>
+			  <groupId>xmlbeans</groupId>
+			  <artifactId>resolver</artifactId>
+			  <version>2.6.0</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/resolver.jar</systemPath>
+		</dependency>
+		<dependency>
+			  <groupId>xmlbeans</groupId>
+			  <artifactId>xbean.jar</artifactId>
+			  <version>2.6.0</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/xbean.jar</systemPath>
+		</dependency>
+		<dependency>
+			  <groupId>xmlbeans</groupId>
+			  <artifactId>xbean_xpath.jar</artifactId>
+			  <version>2.6.0</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/xbean_xpath.jar</systemPath>
+		</dependency>
+		<dependency>
+			  <groupId>xmlbeans</groupId>
+			  <artifactId>xmlbeans-qname.jar</artifactId>
+			  <version>2.6.0</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/xmlbeans-qname.jar</systemPath>
+		</dependency>
+		<dependency>
+			  <groupId>xmlbeans</groupId>
+			  <artifactId>xmlpublic.jar</artifactId>
+			  <version>2.6.0</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/xmlpublic.jar</systemPath>
+		</dependency>
+		
+		
+		<!-- saxon -->
+		<dependency>
+			  <groupId>saxon9</groupId>
+			  <artifactId>saxon9</artifactId>
+			  <version>9.1.0.8</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/saxon9-9.1.0.8.jar</systemPath>
+		</dependency>
+		<dependency>
+			  <groupId>saxon9-dom</groupId>
+			  <artifactId>saxon9-dom</artifactId>
+			  <version>dom-9.1.0.8</version>
+			  <scope>system</scope>
+			  <systemPath>${basedir}/xmlbeans-2.6.0-saxon-libs/saxon9-dom-9.1.0.8.jar</systemPath>
+		</dependency>
+		
+	
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<!-- <version>2.0.4</version> -->
+			<version>2.1.7</version>
+		</dependency>
+		
+		
+		<!-- Core Spring -->
+		<!-- Required  -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+		<dependency>  
+		   <groupId>org.springframework</groupId>  
+		   <artifactId>spring-orm</artifactId>  
+		   <version>${org.springframework.version}</version>  
+		</dependency> 
+ 
+        <!-- Spring AOP dependency -->
+        <dependency>
+    		<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		
+		<!-- Ibatis for database binding -->
+		<!-- We are typcally using both JPA and Ibatis -->
+		<!-- JPA for the CRUD operations and Ibatis for bulk updates and calling stored procedures. -->
+		<!-- 
+			Required to make database connections via Ibatis (not the newer MyBatis) 
+		-->
+		<dependency>
+	        <groupId>org.mybatis</groupId>
+	        <artifactId>mybatis</artifactId>
+	        <version>3.4.0</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.mybatis</groupId>
+	        <artifactId>mybatis-spring</artifactId>
+	        <version>1.3.0</version>
+	    </dependency>
+	    <dependency>
+	    	<groupId>com.jcraft</groupId>
+	    	<artifactId>jsch</artifactId>
+	    	<version>0.1.53</version>
+	    	<type>jar</type>
+	    	<scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	    	<groupId>net.sourceforge.jtds</groupId>
+	    	<artifactId>jtds</artifactId>
+	    	<version>1.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-dbcp2</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+	    <dependency>
+	    	<groupId>commons-io</groupId>
+	    	<artifactId>commons-io</artifactId>
+	    	<version>1.4</version>
+	    	<type>jar</type>
+	    	<scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	    	<groupId>org.apache.commons</groupId>
+	    	<artifactId>commons-compress</artifactId>
+	    	<version>1.0</version>
+	    	<type>jar</type>
+	    	<scope>compile</scope>
+	    </dependency>
+		
+		<!-- This is required for the JPA persistence -->
+        <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.2.0.Final</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>antlr</groupId>
+			<artifactId>antlr</artifactId>
+			<version>2.7.7</version>
+		</dependency>
+		
+		<!-- For logging -->
+		<!-- Required -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+
+		<!-- For testing -->
+		<!-- Typically Required -->
+		<dependency>
+            <groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.4</version>
+        </dependency>
+		<dependency>
+		  <groupId>org.testng</groupId>
+		  <artifactId>testng</artifactId>
+		  <version>6.7</version>
+		  <scope>test</scope>
+		</dependency>
+		
+		<!-- 
+			A very nice annotations base library for handling command line parameter interfacing (parsing, error handling, info screening, etc) 
+				
+				http://jcommander.org/
+		-->
+		<dependency>
+		  <groupId>com.beust</groupId>
+		  <artifactId>jcommander</artifactId>
+		  <version>1.30</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+			
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+	
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-xjc</artifactId>
+			<version>2.2.6</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>jdom</groupId>
+		    <artifactId>jdom</artifactId>
+		    <version>1.1</version>
+		</dependency>
+      
+		
+		<!-- Jaggregate is a collections library that is modeled after the ANSI Smalltalk collection protocols -->
+		<!-- Optional -->
+        <dependency>
+            <groupId>net.sf.jaggregate</groupId>
+            <artifactId>jaggregate</artifactId>
+            <version>3.3</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.mockito</groupId>
+  			<artifactId>mockito-all</artifactId>
+  			<version>1.8.5</version>	
+        </dependency>
+      	    
+      	<dependency>
+   			<groupId>org.jvnet.hudson.main</groupId>
+   			<artifactId>hudson-test-harness</artifactId>
+   			<version>1.283</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>org.apache.maven.plugins</groupId>
+		  <artifactId>maven-failsafe-plugin</artifactId>
+		  <version>2.14.1</version>
+		  <type>maven-plugin</type>
+		</dependency>
+		
+	</dependencies>
+	
+	<repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <layout>default</layout>
+        </repository>
+        
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Maven plugin repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

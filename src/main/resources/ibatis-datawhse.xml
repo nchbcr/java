@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="nci.tcga.bcr.etl.clinical.dsl.generator.dao">
+
+	<select id="getDisplayMetadataItems" resultType="org.nch.bcr.biotab.domain.cache.DisplayMetadataItem">
+		
+		select 
+			'tcgaDiseaseCode' as diseaseCode, 
+			'Sample Submission' as formType, 
+			'preferredFieldName' as preferredName, 
+			1 as displayOrder, 
+			'12345' as cde
+		
+	</select>
+
+</mapper>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsdVersions>
+	<production>
+		<build>
+			<xsdMajorVersion>2</xsdMajorVersion>
+			<xsdMinorVersion>7</xsdMinorVersion>
+			<xsdPatchNumber>14</xsdPatchNumber>
+			<dslBuildNumber>b1</dslBuildNumber>
+		</build>
+	</production>	
+	<development>
+		<build>
+			<xsdMajorVersion>2</xsdMajorVersion>
+			<xsdMinorVersion>7</xsdMinorVersion>
+			<xsdPatchNumber>14</xsdPatchNumber>
+			<dslBuildNumber>b1</dslBuildNumber>
+		</build>
+	</development>
+</xsdVersions>
+	
